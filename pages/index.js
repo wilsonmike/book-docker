@@ -12,14 +12,6 @@ export default function Home() {
   const [founder, setFounder] = useState("");
   const [apiRes, setApiRes] = useState(null);
 
-  useEffect(() => {
-    console.log("book title", bookTitle);
-    console.log("book author", bookAuthor);
-    console.log("book genre", bookGenre);
-    console.log("founder", founder);
-    console.log("api res", apiRes);
-  }, [bookTitle, bookAuthor, bookGenre, founder, apiRes]);
-
   const readDb = async () => {
     try {
       const response = await fetch("/api/books", {
@@ -35,6 +27,13 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const resetForm = () => {
+    setBookTitle("");
+    setBookAuthor("");
+    setBookGenre("");
+    setFounder("");
   }
 
   const handleSubmit = async (e) => {
@@ -58,12 +57,7 @@ export default function Home() {
     }
   }
 
-  const resetForm = () => {
-    setBookTitle("");
-    setBookAuthor("");
-    setBookGenre("");
-    setFounder("");
-  }
+
 
   return (
     <div className="overflow-hidden bg-white py-16 px-4 sm:px-6 lg:px-8 lg:py-24">
@@ -190,6 +184,11 @@ export default function Home() {
             </div>
           </form>
         </div>
+      </div>
+      <div>
+        {apiRes?.map((book) => (
+          <li key={book.id}>{book.bookTitle}</li>
+        ))}
       </div>
     </div>
   )
