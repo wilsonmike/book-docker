@@ -10,13 +10,60 @@ export default function Home() {
   const [bookAuthor, setBookAuthor] = useState("");
   const [bookGenre, setBookGenre] = useState("");
   const [founder, setFounder] = useState("");
+  const [apiRes, setApiRes] = useState(null);
 
   useEffect(() => {
     console.log("book title", bookTitle);
     console.log("book author", bookAuthor);
     console.log("book genre", bookGenre);
     console.log("founder", founder);
-  }, [bookTitle, bookAuthor, bookGenre, founder]);
+    console.log("api res", apiRes);
+  }, [bookTitle, bookAuthor, bookGenre, founder, apiRes]);
+
+  const readDb = async () => {
+    try {
+      const response = await fetch("/api/books", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      setApiRes(await response.json())
+      if (response.status != 200) {
+        console.log("Oops something went wrong with the request");
+      } else {
+        console.log("200 Success");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const body = { bookTitle, bookAuthor, bookGenre, founder }
+    try {
+      const response = await fetch("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (response.status != 200) {
+        console.log("Oops something went wrong with the request");
+      } else {
+        resetForm();
+        readDb();
+        console.log("Form submitted successfully");
+      }
+    } catch (error) {
+      console.log("There was an error with the request", error);
+    }
+  }
+
+  const resetForm = () => {
+    setBookTitle("");
+    setBookAuthor("");
+    setBookGenre("");
+    setFounder("");
+  }
 
   return (
     <div className="overflow-hidden bg-white py-16 px-4 sm:px-6 lg:px-8 lg:py-24">
@@ -72,7 +119,7 @@ export default function Home() {
           </p>
         </div>
         <div className="mt-12">
-          <form action="#" method="POST" className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
+          <form action="#" method="POST" onSubmit={(e) => handleSubmit(e)} className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
             <div>
               <label htmlFor="book-title" className="block text-sm font-medium text-gray-700">
                 Book Title

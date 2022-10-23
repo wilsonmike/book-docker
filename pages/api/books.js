@@ -27,9 +27,9 @@ async function addBook(req, res) {
   try {
     const newEntry = await prisma.bookSuggestion.create({
       data: {
-        bookTitle: body.title,
-        bookAuthor: body.author,
-        bookGenre: body.genre,
+        bookTitle: body.bookTitle,
+        bookAuthor: body.bookAuthor,
+        bookGenre: body.bookGenre,
         founder: body.founder
       }
     });
